@@ -54,4 +54,77 @@ AWS Cloud Instance Type(Instance Family)는 다음과 같다.
   
   6. Hands-On으로 직접 EC2 Instance를 생성하고 본인만의 웹 홈페이지를 생성한다.
   
+  1. Xshell Download
+  # URL_https://www.netsarang.com/ko/
+  # Download Ver : Xshell_6 or Xshell_7
+  "Xshell"의 용도는 생성된 EC2 Instance의 접근 및 설정을 하기위한 도구 라고 생각하면 된다. EC2 Instance 세션 정보를 저장하여 "Putty"로 매번 Key등록을 할 필요가 없다.
+  
+  2. AWS Cloud Console Login
+  Root 계정으로 login하여 Console에 접근한다. On-Premise 접근시 터미널을 Console이라고 하지만 AWS는 홈페이지 자체가 서비스를 구성할 수 있는 기능이 존재하여 "AWS Cloud Console"이라고 한다.
+  MFA설정은 "Multi-factor Authenticaton"으로 직역하면 "다중 인증"으로 기존 ID, Password를 1단계 로그인 인증 방법이라고 한다면 2단계인 Console에 접근하는 유저가 진짜인지 인증하기위한 방법이라고 생각하면 된다.
+  # 참고로 설명드리자면 최상위 권한을 갖고있는 AWS Root Account로 로그인하여 서비스 하는 방법보단 Root Account 하위의 IAM User를 생성하여 적절한 권한을 부여하여 사용하는 방법을 추천한다.
+  
+  3. Create EC2 Instance
+  # URL_https://victorydntmd.tistory.com/61
+  "EC2" 서비스에서 생성한 가상 서버는 EC2 Instance로 On-Premise 서버와 동일한 기능을 갖는다.
+   3-1. AWS Cloud Console > AWS서비스 > EC2(ap-northest-2_서울리전확인)
+   3-2. Instance Start
+   3-3. AMI선택_Amazon Linux(Free Tier)
+        AMI는 (Amazon Machine Image)로 위에서 언급내용 확인 요청, 다시 한번 설명하자면 OS는 기존과 동일한 OS를 사용하지만 EC2 Instance생성시 Batch로 명령어를 실행시킨다.
+   3-4. Instance Type_범용인스턴스의 "t2.micro"
+        Instnace Type은 위에서 언급내용 확인 요청, 생성 할 EC2 Instance에서 어떤 주요 기능을 수행할 것인가에 따라 선택 가능
+   3-5. 인스턴스 세부 정보 구성
+         - 인스턴스 개수 : EC2 Instance를 한번에 몇 대로 생성할 것인가에 대한 개수
+         - 구매 옵션     : Spot Instance 구매 옵션
+         - 네트워크      : VPC에 따로 정리하겠지만 VPC를 선택 함
+         - 서브넷        : 실제 EC2 Instance(Server)가 Public 또는 Private 또는 다른 용도에 맞게 사용할 공간을 선택하는 것.
+         - 퍼블릭 IP 자동할당 : 외부(Internet)에서 접근 가능한 IP를 부여 함
+         - 배치 그룹     : 기존 그룹에 대한 네트워크 확보를 하기위해 미리 설정이 가능
+         - 용량 예약     : 특정 가용영역에 미리 EC2 Instance를 위해 용량을 예약 할 수 있음.
+         - IAM 역할      : EC2 Instance에 대한 IAM Role을 부여할 수 있다.
+         - 종료 방식     : OS 수준의 종료 설정시 결과를 미리 구성합니다.
+         - 최대 절전 중지 동작 : 인스턴스를 중지 할 때 Instance Store에 있는 데이터를 Root Volume에 저장한다.
+         - 종료 방지 기능 활성화 : 우발적인 종료로부터 보호할 수 있다.
+         - 모니터링      : CloudWatch 메트릭을 설정하여 5분단위로 지표수집이 가능하다.
+         - 테넌시        : AWS 물리적 HW를 대여하여 사용한다.
+         - Elastic Interface : EC2 Instance에 "딥러닝" 기능의 효율적인 퍼포먼스와 비용을 제공할 수 있다.
+         - T2/T3 무제한  : 기존 Instance를 생성 후 일정 값의 CPU초과시 자동으로 확장할 수 있는 기능으로 On-Demand 요금 방식을 따른다.
+         - 파일 시스템   : EFS(Elastic File System)을 지정한다
+         - 네트워크 인터페이스 : EC2 Instance에 네트워크 인터페이스를 설정할 수 있다.
+         - 사용자 데이터 : EC2 Instance를 생성하기 전 "Sudo su" "Super User do" 로 실행시키는 방법
+   4. 스토리지 추가
+      스토리지는 기존 EC2 Instance에 Disk Drive를 추가시킬 수 있으며 Volume Type도 선택할 수 있음
+   5. 태그 추가
+      Hash 형태로 Key-Value를 통해 Key를 기반으로 원한는 값을 설정한다.
+   6. 보안 그룹 구성
+      위에서 언급한 Firewall로 보안그룹 & IP 기반 Allow 할 수 있다.
+      
+  6번까지 설정이 완료되면 7단계 : "인스턴스 시작 검토"를 확인 할 수 있으며 Summary라고 이해하면 됨
+  
+# 인스턴스 생성시 수정 항목
+ - 3단계 인스턴스 세부 정보에서 "퍼블릭 IP 자동할당"을 "활성화"로 설정한 다음 "Next"
+ - 6단계 보안 그룹 구성에서 새 보안그룹을 생성한다. "규칙 추가" 후 유형 "HTTP"를 선택 한 후 소스를 "내 IP"선택 
  
+# Xshell 접속방법
+URL_https://zzdd1558.tistory.com/202
+
+# EC2 Instance 서버에 Web Apache를 설치하여 Local환경에서 자신 소유의 Homepage를 띄워본다.
+AMI가 "Amazon Linux2"일 때 EC2 Instance에 접속하여 다음과 같이 설정한다
+1. AWS Cloud Console
+1-1. EC2 Instance에 Xshell로 접속
+2. EC2 Instance 터미널
+2-1. sudo su
+2-2. yum install httpd -y
+2-3. cd /var/www/html
+2-4. vi index.html
+ 2-4-1. "i" 를 클릭 후 자신의 이름을 작성
+ 2-4-2. "esc" 클릭
+ 2-4-3. ":wq" 그대로 입력 후 엔터
+2-5. service httpd start (httpd Deamon 활성화)
+2-6. service httpd status (Active일때 httpd 데몬 동작 확인)
+2-7. EC2 Instance의 "퍼블릭 DNS(IPv4)"의 주소를 복사하여 Chrome 브라우저 URL창에 입력 후 자신의 홈페이지를 확인할 수 있다.
+
+
+
+
+
